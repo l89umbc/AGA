@@ -11,6 +11,7 @@ import android.widget.Button;
 public class ExamScanActivity extends AppCompatActivity {
 
     private Button buttonCamera;
+    private Button backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,12 +19,20 @@ public class ExamScanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_exam_scan);
 
         buttonCamera = (Button) findViewById(R.id.buttonCamera);
+        backButton = (Button) findViewById(R.id.buttonExamScanBack);
 
         buttonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivity(myIntent);
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

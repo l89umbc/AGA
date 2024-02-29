@@ -31,7 +31,7 @@
         app:layout_constraintVertical_bias="0.945" />
 
     <Button
-        android:id="@+id/buttonExit"
+        android:id="@+id/buttonExamBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Back"

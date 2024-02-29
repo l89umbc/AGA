@@ -19,7 +19,7 @@ public class RegisterActivity extends AppCompatActivity {
         backButton = (Button) findViewById(R.id.backRegisterButton);
         createButton = (Button) findViewById(R.id.buttonCreateAccount);
 
-        backButton.setOnClickListener(new View.OnClickListener() {
+        createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

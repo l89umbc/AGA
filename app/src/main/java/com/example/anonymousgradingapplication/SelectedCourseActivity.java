@@ -32,5 +32,27 @@ public class SelectedCourseActivity extends AppCompatActivity {
                 startActivity(myIntent);
             }
         });
+
+        classInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(SelectedCourseActivity.this, ClassInfoActivity.class);
+                startActivity(myIntent);
+            }
+        });
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 }
