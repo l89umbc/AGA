@@ -50,8 +50,8 @@
 
     <TextView
         android:id="@+id/textViewRoster"
-        android:layout_width="257dp"
-        android:layout_height="306dp"
+        android:layout_width="271dp"
+        android:layout_height="216dp"
         android:text="Class Roster"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
