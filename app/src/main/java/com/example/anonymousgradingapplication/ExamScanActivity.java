@@ -31,8 +31,8 @@ public class ExamScanActivity extends AppCompatActivity {
     private Button addStudentButton;
     private EditText studentNameEdit;
     private ListView rosterListView;
-    private List<String> studentNames;
-    private List<Bitmap> barcodeBitmaps;
+    private ArrayList<String> studentNames;
+    private ArrayList<Bitmap> barcodeBitmaps;
     private BarcodeMapAdapter adapter;
 
     @Override
@@ -59,7 +59,7 @@ public class ExamScanActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-                    Bitmap bitmap = barcodeEncoder.encodeBitmap("content", BarcodeFormat.QR_CODE, 400, 400);
+                    Bitmap bitmap = barcodeEncoder.encodeBitmap(studentNameEdit.getText().toString(), BarcodeFormat.QR_CODE, 400, 400);
                     barcodeBitmaps.add(bitmap);
                     studentNames.add(studentNameEdit.getText().toString());
                     adapter.notifyDataSetChanged();
@@ -76,13 +76,21 @@ public class ExamScanActivity extends AppCompatActivity {
             }
         });
 
-
+        classMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(ExamScanActivity.this, ClassInfoActivity.class);
+                myIntent.putStringArrayListExtra("studentNames", studentNames);
+                startActivity(myIntent);
+            }
+        });
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+
     }
 
     // Register the launcher and result handler

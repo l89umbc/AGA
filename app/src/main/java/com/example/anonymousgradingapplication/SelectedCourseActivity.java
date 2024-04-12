@@ -27,7 +27,6 @@ import java.util.List;
 
 public class SelectedCourseActivity extends AppCompatActivity {
 
-    private Button classInfoButton;
     private Button examsButton;
     private Button saveButton;
     private Button uploadButton;
@@ -41,7 +40,6 @@ public class SelectedCourseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selected_course);
 
-        classInfoButton = (Button) findViewById(R.id.buttonClassInfo);
         examsButton = (Button) findViewById(R.id.buttonExams);
         saveButton = (Button) findViewById(R.id.buttonCourseSave);
         uploadButton = (Button) findViewById(R.id.buttonUploadRoster);
@@ -53,14 +51,6 @@ public class SelectedCourseActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(SelectedCourseActivity.this, AddExamActivity.class);
-                startActivity(myIntent);
-            }
-        });
-
-        classInfoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myIntent = new Intent(SelectedCourseActivity.this, ClassInfoActivity.class);
                 startActivity(myIntent);
             }
         });

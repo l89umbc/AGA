@@ -9,18 +9,19 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BarcodeMapAdapter extends BaseAdapter
 {
 
     private Context context;
-    private List<String> studentNames;
-    private List<Bitmap> barcodeBitmaps;
+    private ArrayList<String> studentNames;
+    private ArrayList<Bitmap> barcodeBitmaps;
 
     private LayoutInflater inflater;
 
-    public BarcodeMapAdapter(Context context, List<String> fruitnames, List<Bitmap> images){
+    public BarcodeMapAdapter(Context context, ArrayList<String> fruitnames, ArrayList<Bitmap> images){
         this.context = context;
         this.studentNames = fruitnames;
         this.barcodeBitmaps = images;
