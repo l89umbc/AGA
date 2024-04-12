@@ -93,17 +93,23 @@ public class ExamScanActivity extends AppCompatActivity {
 
     }
 
-    // Register the launcher and result handler
+    // Copied from zx barcode library readme
+
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(),
             result -> {
                 if(result.getContents() == null) {
                     Toast.makeText(ExamScanActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
                 } else {
+                    String[] parts = result.getContents().split(",");
+                    String name = parts[0].trim();
+                    String grade = parts[1].trim();
+                    Log.d(name, grade);
+                    Toast.makeText(ExamScanActivity.this, "Name: " + name, Toast.LENGTH_LONG).show();
+                    Toast.makeText(ExamScanActivity.this, "Grade: " + grade, Toast.LENGTH_LONG).show();
                     Toast.makeText(ExamScanActivity.this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                 }
             });
 
-    // Launch
     public void launchBarcodeScanner(View view) {
         barcodeLauncher.launch(new ScanOptions());
     }
