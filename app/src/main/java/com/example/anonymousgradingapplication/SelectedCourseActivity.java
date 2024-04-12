@@ -36,7 +36,7 @@ public class SelectedCourseActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
-    public static String namepref= "Authentication";
+    public static String namepref= "Class1";
     private Map<String, ?> currClass;
 
     @Override
