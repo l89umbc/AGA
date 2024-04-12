@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.opencsv.CSVReader;
 
@@ -24,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Map;
 
 public class SelectedCourseActivity extends AppCompatActivity {
 
@@ -31,10 +33,12 @@ public class SelectedCourseActivity extends AppCompatActivity {
     private Button examsButton;
     private Button saveButton;
     private Button uploadButton;
+    private TextView classRosterText;
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
     public static String namepref= "Authentication";
+    private Map<String, ?> currClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +49,18 @@ public class SelectedCourseActivity extends AppCompatActivity {
         examsButton = (Button) findViewById(R.id.buttonExams);
         saveButton = (Button) findViewById(R.id.buttonCourseSave);
         uploadButton = (Button) findViewById(R.id.buttonUploadRoster);
+        classRosterText = (TextView) findViewById(R.id.textViewRoster);
 
         prefs = getSharedPreferences(namepref, MODE_PRIVATE);
         editor =  prefs.edit();
+
+        currClass = prefs.getAll();
+        StringBuilder temp = new StringBuilder();
+        for (Map.Entry<String,?> entry : currClass.entrySet())
+        {
+            temp.append(entry.getKey()).append(":   ").append(entry.getValue()).append("\n");
+        }
+        classRosterText.setText(temp);
 
         examsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,6 +126,14 @@ public class SelectedCourseActivity extends AppCompatActivity {
                                         throw new RuntimeException(e);
                                     }
 
+                                    currClass = prefs.getAll();
+
+                                    StringBuilder temp = new StringBuilder();
+                                    for (Map.Entry<String,?> entry : currClass.entrySet())
+                                    {
+                                        temp.append(entry.getKey()).append(":   ").append(entry.getValue()).append("\n");
+                                    }
+                                    classRosterText.setText(temp);
                                 }
 
                             }
