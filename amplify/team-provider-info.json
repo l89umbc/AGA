@@ -10,6 +10,11 @@
       "StackName": "amplify-anonymousgradingappl-dev-eb025",
       "StackId": "arn:aws:cloudformation:us-east-1:975049980742:stack/amplify-anonymousgradingappl-dev-eb025/d1f831c0-0e49-11ef-8b18-0affeead540b",
       "AmplifyAppId": "d3ujd2ntzthk9j"
+    },
+    "categories": {
+      "auth": {
+        "anonymousgradingapple91fdadce91fdadc": {}
+      }
     }
   }
 }
