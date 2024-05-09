@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-anonymousgradingappl-dev-eb025-authRole",
+      "UnauthRoleArn": "arn:aws:iam::975049980742:role/amplify-anonymousgradingappl-dev-eb025-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::975049980742:role/amplify-anonymousgradingappl-dev-eb025-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-anonymousgradingappl-dev-eb025-deployment",
+      "UnauthRoleName": "amplify-anonymousgradingappl-dev-eb025-unauthRole",
+      "StackName": "amplify-anonymousgradingappl-dev-eb025",
+      "StackId": "arn:aws:cloudformation:us-east-1:975049980742:stack/amplify-anonymousgradingappl-dev-eb025/d1f831c0-0e49-11ef-8b18-0affeead540b",
+      "AmplifyAppId": "d3ujd2ntzthk9j"
+    }
+  }
+}
