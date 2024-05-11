@@ -1,6 +1,6 @@
 export type AmplifyDependentResourcesAttributes = {
   "auth": {
-    "anonymousgradingapple91fdadce91fdadc": {
+    "anonymousgradingapplf19b24ecf19b24ec": {
       "AppClientID": "string",
       "AppClientIDWeb": "string",
       "IdentityPoolId": "string",
