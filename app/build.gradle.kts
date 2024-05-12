@@ -42,6 +42,7 @@ dependencies {
     implementation("com.amplifyframework:core:2.16.0")
     implementation("com.amplifyframework:aws-auth-cognito:2.16.0")
     implementation("com.amplifyframework:aws-datastore:2.16.0")
+    implementation("com.amplifyframework:aws-api:2.16.0")
     implementation("com.opencsv:opencsv:4.6")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     testImplementation("junit:junit:4.13.2")

@@ -22,9 +22,11 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 @ModelConfig(pluralName = "Students", type = Model.Type.USER, version = 1)
 public final class Student implements Model {
   public static final QueryField ID = field("Student", "id");
+  public static final QueryField UMBC_ID = field("Student", "umbcID");
   public static final QueryField NAME = field("Student", "name");
   public static final QueryField STUDENT_CLASS_STUDENTS_ID = field("Student", "studentClassStudentsId");
   private final @ModelField(targetType="ID", isRequired = true) String id;
+  private final @ModelField(targetType="String", isRequired = true) String umbcID;
   private final @ModelField(targetType="String", isRequired = true) String name;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
@@ -37,6 +39,10 @@ public final class Student implements Model {
   
   public String getId() {
       return id;
+  }
+  
+  public String getUmbcId() {
+      return umbcID;
   }
   
   public String getName() {
@@ -55,8 +61,9 @@ public final class Student implements Model {
       return studentClassStudentsId;
   }
   
-  private Student(String id, String name, String studentClassStudentsId) {
+  private Student(String id, String umbcID, String name, String studentClassStudentsId) {
     this.id = id;
+    this.umbcID = umbcID;
     this.name = name;
     this.studentClassStudentsId = studentClassStudentsId;
   }
@@ -70,6 +77,7 @@ public final class Student implements Model {
       } else {
       Student student = (Student) obj;
       return ObjectsCompat.equals(getId(), student.getId()) &&
+              ObjectsCompat.equals(getUmbcId(), student.getUmbcId()) &&
               ObjectsCompat.equals(getName(), student.getName()) &&
               ObjectsCompat.equals(getCreatedAt(), student.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), student.getUpdatedAt()) &&
@@ -81,6 +89,7 @@ public final class Student implements Model {
    public int hashCode() {
     return new StringBuilder()
       .append(getId())
+      .append(getUmbcId())
       .append(getName())
       .append(getCreatedAt())
       .append(getUpdatedAt())
@@ -94,6 +103,7 @@ public final class Student implements Model {
     return new StringBuilder()
       .append("Student {")
       .append("id=" + String.valueOf(getId()) + ", ")
+      .append("umbcID=" + String.valueOf(getUmbcId()) + ", ")
       .append("name=" + String.valueOf(getName()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()) + ", ")
@@ -102,7 +112,7 @@ public final class Student implements Model {
       .toString();
   }
   
-  public static NameStep builder() {
+  public static UmbcIdStep builder() {
       return new Builder();
   }
   
@@ -118,15 +128,22 @@ public final class Student implements Model {
     return new Student(
       id,
       null,
+      null,
       null
     );
   }
   
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
+      umbcID,
       name,
       studentClassStudentsId);
   }
+  public interface UmbcIdStep {
+    NameStep umbcId(String umbcId);
+  }
+  
+
   public interface NameStep {
     BuildStep name(String name);
   }
@@ -139,16 +156,18 @@ public final class Student implements Model {
   }
   
 
-  public static class Builder implements NameStep, BuildStep {
+  public static class Builder implements UmbcIdStep, NameStep, BuildStep {
     private String id;
+    private String umbcID;
     private String name;
     private String studentClassStudentsId;
     public Builder() {
       
     }
     
-    private Builder(String id, String name, String studentClassStudentsId) {
+    private Builder(String id, String umbcID, String name, String studentClassStudentsId) {
       this.id = id;
+      this.umbcID = umbcID;
       this.name = name;
       this.studentClassStudentsId = studentClassStudentsId;
     }
@@ -159,8 +178,16 @@ public final class Student implements Model {
         
         return new Student(
           id,
+          umbcID,
           name,
           studentClassStudentsId);
+    }
+    
+    @Override
+     public NameStep umbcId(String umbcId) {
+        Objects.requireNonNull(umbcId);
+        this.umbcID = umbcId;
+        return this;
     }
     
     @Override
@@ -188,9 +215,15 @@ public final class Student implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String name, String studentClassStudentsId) {
-      super(id, name, studentClassStudentsId);
+    private CopyOfBuilder(String id, String umbcId, String name, String studentClassStudentsId) {
+      super(id, umbcID, name, studentClassStudentsId);
+      Objects.requireNonNull(umbcID);
       Objects.requireNonNull(name);
+    }
+    
+    @Override
+     public CopyOfBuilder umbcId(String umbcId) {
+      return (CopyOfBuilder) super.umbcId(umbcId);
     }
     
     @Override

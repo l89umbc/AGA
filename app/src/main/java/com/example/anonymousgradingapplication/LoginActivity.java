@@ -10,8 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.amplifyframework.core.Amplify;
-import com.amplifyframework.core.model.query.QueryOptions;
-import com.amplifyframework.core.model.query.Where;
 import com.amplifyframework.datastore.generated.model.Professor;
 
 public class LoginActivity extends AppCompatActivity {
@@ -23,6 +21,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        Amplify.Auth.signOut(result->{});
+
+        Amplify.DataStore.clear(()->{}, error->{});
 
         loginButton = (Button) findViewById(R.id.loginButton);
         registerButton = (Button) findViewById(R.id.registerButton);
@@ -48,12 +50,13 @@ public class LoginActivity extends AppCompatActivity {
                                                 while(matches.hasNext())
                                                 {
                                                     professor = matches.next();
-
+                                                    Log.i("LoopProfessor", "Success: "+professor.getName());
                                                 }
                                                 if(professor != null)
                                                 {
                                                     Log.i("AmplifyGetProfessor", professor.getName());
                                                     Intent myIntent = new Intent(LoginActivity.this, AddCourseActivity.class);
+                                                    myIntent.putExtra("profName", professor.getName());
                                                     startActivity(myIntent);
                                                 }
                                                 else
@@ -62,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                                                     Amplify.DataStore.save(professor,
                                                             success-> {
                                                                 Intent myIntent = new Intent(LoginActivity.this, AddCourseActivity.class);
+                                                                myIntent.putExtra("profName", userText.getText().toString());
                                                                 startActivity(myIntent);
                                                             },
                                                             error->Log.e("NewProfessorAdded", "Error: "+error));

@@ -24,5 +24,6 @@ type Exam @model {
 
 type Student @model {
     id: ID!
+    umbcID: String!
     name: String!
 }
