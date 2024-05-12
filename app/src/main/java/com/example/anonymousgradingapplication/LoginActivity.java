@@ -24,8 +24,6 @@ public class LoginActivity extends AppCompatActivity {
 
         Amplify.Auth.signOut(result->{});
 
-        Amplify.DataStore.clear(()->{}, error->{});
-
         loginButton = (Button) findViewById(R.id.loginButton);
         registerButton = (Button) findViewById(R.id.registerButton);
         userText = (EditText) findViewById(R.id.editTextLoginUsername);
@@ -39,11 +37,13 @@ public class LoginActivity extends AppCompatActivity {
                         result -> Log.i("AmplifyLogin", "Result: " + result.toString()),
                         error -> Log.e("AmplifyLogin", "Result: " + error.toString())
                 );
+
+                Amplify.DataStore.start(()->{}, error->{});
+
                 Amplify.Auth.fetchAuthSession(
                         result ->{
                                 Log.i("AmplifyFetch", "Result: " + result.toString());
                                 if (result.isSignedIn()) {
-
                                     Amplify.DataStore.query(Professor.class, Professor.NAME.eq(userText.getText().toString()),
                                             matches -> {
                                                 Professor professor = null;
@@ -51,21 +51,23 @@ public class LoginActivity extends AppCompatActivity {
                                                 {
                                                     professor = matches.next();
                                                     Log.i("LoopProfessor", "Success: "+professor.getName());
+//                                                    Amplify.DataStore.delete(professor, res->{}, err->{});
                                                 }
                                                 if(professor != null)
                                                 {
                                                     Log.i("AmplifyGetProfessor", professor.getName());
                                                     Intent myIntent = new Intent(LoginActivity.this, AddCourseActivity.class);
-                                                    myIntent.putExtra("profName", professor.getName());
+                                                    myIntent.putExtra("profID", professor.getId());
                                                     startActivity(myIntent);
                                                 }
                                                 else
                                                 {
                                                     professor = Professor.builder().name(userText.getText().toString()).build();
+                                                    String profID = professor.getId();
                                                     Amplify.DataStore.save(professor,
                                                             success-> {
                                                                 Intent myIntent = new Intent(LoginActivity.this, AddCourseActivity.class);
-                                                                myIntent.putExtra("profName", userText.getText().toString());
+                                                                myIntent.putExtra("profID", profID);
                                                                 startActivity(myIntent);
                                                             },
                                                             error->Log.e("NewProfessorAdded", "Error: "+error));

@@ -22,6 +22,8 @@ public class AddExamActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(AddExamActivity.this, ExamScanActivity.class);
+                myIntent.putExtra("profID", getIntent().getStringExtra("profID"));
+                myIntent.putExtra("courseID", getIntent().getStringExtra("courseID"));
                 startActivity(myIntent);
             }
         });

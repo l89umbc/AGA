@@ -21,9 +21,9 @@ public class BarcodeMapAdapter extends BaseAdapter
 
     private LayoutInflater inflater;
 
-    public BarcodeMapAdapter(Context context, ArrayList<String> fruitnames, ArrayList<Bitmap> images){
+    public BarcodeMapAdapter(Context context, ArrayList<String> studentNames, ArrayList<Bitmap> images){
         this.context = context;
-        this.studentNames = fruitnames;
+        this.studentNames = studentNames;
         this.barcodeBitmaps = images;
         inflater = LayoutInflater.from(context);
     }

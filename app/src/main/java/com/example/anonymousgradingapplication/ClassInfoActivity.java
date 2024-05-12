@@ -40,16 +40,19 @@ public class ClassInfoActivity extends AppCompatActivity {
         barcodeBitmaps = new ArrayList<Bitmap>();
 
         studentNames = getIntent().getStringArrayListExtra("studentNames");
-        for(String name: studentNames)
+        if(studentNames != null)
         {
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            Bitmap bitmap = null;
-            try {
-                bitmap = barcodeEncoder.encodeBitmap(name, BarcodeFormat.QR_CODE, 400, 400);
-            } catch (WriterException e) {
-                throw new RuntimeException(e);
+            for(String name: studentNames)
+            {
+                BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                Bitmap bitmap = null;
+                try {
+                    bitmap = barcodeEncoder.encodeBitmap(name, BarcodeFormat.QR_CODE, 400, 400);
+                } catch (WriterException e) {
+                    throw new RuntimeException(e);
+                }
+                barcodeBitmaps.add(bitmap);
             }
-            barcodeBitmaps.add(bitmap);
         }
 
         adapter = new BarcodeMapAdapter(ClassInfoActivity.this, studentNames, barcodeBitmaps);

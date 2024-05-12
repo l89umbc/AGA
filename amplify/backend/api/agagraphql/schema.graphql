@@ -18,6 +18,10 @@ type StudentClass @model {
 type Exam @model {
     id: ID!
     name: String!
+}
+
+type StudentExam @model {
+    id: ID!
     student: Student! @hasOne
     grade: String!
 }

@@ -36,7 +36,7 @@ public class AddCourseActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(AddCourseActivity.this, SelectedCourseActivity.class);
-                myIntent.putExtra("profName", getIntent().getStringExtra("profName"));
+                myIntent.putExtra("profID", getIntent().getStringExtra("profID"));
                 startActivity(myIntent);
             }
         });

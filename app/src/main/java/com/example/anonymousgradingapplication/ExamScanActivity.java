@@ -6,29 +6,31 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.Professor;
+import com.amplifyframework.datastore.generated.model.Student;
+import com.amplifyframework.datastore.generated.model.StudentClass;
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ExamScanActivity extends AppCompatActivity {
 
-    private Button buttonCamera;
-    private Button backButton;
-    private Button classMapButton;
-    private Button addStudentButton;
+    private Button buttonCamera, backButton, classMapButton, addStudentButton;
+
+    private String courseID, profID;
+    private Professor currProfessor;
+    private StudentClass currClass;
     private EditText studentNameEdit;
     private ListView rosterListView;
     private ArrayList<String> studentNames;
@@ -39,6 +41,27 @@ public class ExamScanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_scan);
+
+        profID = getIntent().getStringExtra("profID");
+        courseID = getIntent().getStringExtra("courseID");
+
+        Amplify.DataStore.query(Professor.class, Professor.ID.eq(profID),
+                matches->{
+                    while(matches.hasNext())
+                    {
+                        currProfessor = matches.next();
+                    }
+                },
+                error->Log.e("FetchProfessor", "Error: "+error));
+
+        Amplify.DataStore.query(StudentClass.class, StudentClass.ID.eq(courseID),
+                matches->{
+                    while(matches.hasNext())
+                    {
+                        currClass = matches.next();
+                    }
+                },
+                error->Log.e("FetchRoster", "Error: "+error));
 
         studentNames = new ArrayList<String>();
         barcodeBitmaps = new ArrayList<Bitmap>();
@@ -52,7 +75,28 @@ public class ExamScanActivity extends AppCompatActivity {
 
         adapter = new BarcodeMapAdapter(this.getApplicationContext(), studentNames, barcodeBitmaps);
 
+        Amplify.DataStore.query(Student.class, Student.STUDENT_CLASS_STUDENTS_ID.eq(courseID),
+                matches->{
+                    while(matches.hasNext())
+                    {
+                        Student temp = matches.next();
+
+                        try {
+                            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                            Bitmap bitmap = barcodeEncoder.encodeBitmap(temp.getName(), BarcodeFormat.QR_CODE, 400, 400);
+                            barcodeBitmaps.add(bitmap);
+                            studentNames.add(temp.getName());
+                        } catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                error->Log.e("FetchStudents", "Error: "+error));
+
         rosterListView.setAdapter(adapter);
+
+        adapter.notifyDataSetChanged();
 
         addStudentButton.setOnClickListener(new View.OnClickListener() {
             @Override

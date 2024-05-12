@@ -16,9 +16,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amplifyframework.core.Amplify;
-import com.amplifyframework.datastore.generated.model.Exam;
 import com.amplifyframework.datastore.generated.model.Professor;
 import com.amplifyframework.datastore.generated.model.Student;
 import com.amplifyframework.datastore.generated.model.StudentClass;
@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Map;
 
 public class SelectedCourseActivity extends AppCompatActivity {
 
@@ -41,7 +40,8 @@ public class SelectedCourseActivity extends AppCompatActivity {
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
     public static String namepref= "Class1";
-    private String profName;
+    private String profID;
+    private String courseID;
     private Professor currProfessor = null;
     private StudentClass currClass = null;
 
@@ -59,8 +59,8 @@ public class SelectedCourseActivity extends AppCompatActivity {
         editProfName = (EditText) findViewById(R.id.editTextProfessor);
 
         Intent intent = getIntent();
-        profName = intent.getStringExtra("profName");
-        Amplify.DataStore.query(Professor.class, Professor.NAME.eq(intent.getStringExtra("profName")),
+        profID = intent.getStringExtra("profID");
+        Amplify.DataStore.query(Professor.class, Professor.ID.eq(profID),
                 matches->{
                     while(matches.hasNext())
                     {
@@ -85,7 +85,14 @@ public class SelectedCourseActivity extends AppCompatActivity {
         examsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(currClass == null)
+                {
+                    Toast.makeText(SelectedCourseActivity.this, "Fetch a class first", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 Intent myIntent = new Intent(SelectedCourseActivity.this, AddExamActivity.class);
+                myIntent.putExtra("profID", profID);
+                myIntent.putExtra("courseID", courseID);
                 startActivity(myIntent);
             }
         });
@@ -114,6 +121,8 @@ public class SelectedCourseActivity extends AppCompatActivity {
                             Log.i("FetchRoster", "Success: building roster");
                             while(matches.hasNext()){
                                 StudentClass temp = matches.next();
+                                currClass = temp;
+                                courseID = temp.getId();
                                 Log.i("FetchRoster", "Success: " + temp.getName());
                                 StringBuilder tString = new StringBuilder();
 
@@ -162,6 +171,8 @@ public class SelectedCourseActivity extends AppCompatActivity {
                                                     while(matches.hasNext())
                                                     {
                                                         currClass = matches.next();
+                                                        courseID = currClass.getId();
+//                                                        Amplify.DataStore.delete(currClass, res->{}, err->{});
                                                     }
                                                 },
                                                 error->Log.e("CheckRoster", "Error: "+error));
@@ -169,6 +180,7 @@ public class SelectedCourseActivity extends AppCompatActivity {
                                         if (currClass == null)
                                         {
                                             currClass = StudentClass.builder().name(editClassName.getText().toString()).professorClassesId(currProfessor.getId()).build();
+                                            courseID = currClass.getId();
                                             Amplify.DataStore.save(currClass,
                                                     success->Log.i("AddClass", "Success: "+success),
                                                     error->Log.e("AddClass", "Error: "+error));
@@ -186,9 +198,25 @@ public class SelectedCourseActivity extends AppCompatActivity {
                                         while ((line = reader.readNext()) != null) {
                                             Log.d(line[0], line[1]);
                                             Student student = Student.builder().umbcId(line[1]).name(line[0]).studentClassStudentsId(currClass.getId()).build();
-                                            Amplify.DataStore.save(student,
-                                                    success->Log.i("AddStudent", "Success: "+success),
-                                                    error->Log.e("AddStudent", "Error: "+error));
+
+                                            Amplify.DataStore.query(Student.class, Student.NAME.eq(line[0]),
+                                                    success->{
+                                                        boolean flag = false;
+                                                        while(success.hasNext())
+                                                        {
+                                                            Student temp = success.next();
+                                                            flag = true;
+//                                                            Amplify.DataStore.delete(temp, res->{}, err->{});
+                                                        }
+                                                        if(!flag)
+                                                        {
+                                                            Amplify.DataStore.save(student,
+                                                                    succ->Log.i("AddStudent", "Success: "+succ),
+                                                                    error->Log.e("AddStudent", "Error: "+error));
+                                                        }
+                                                    },
+                                                    error->Log.e("CheckStudent", "Error: "+error));
+
 //                                          editor.putString(line[0], line[1]);
 //                                          editor.commit();
                                         }
