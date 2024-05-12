@@ -1,4 +1,24 @@
 {
+  "api": {
+    "agagraphql": {
+      "dependsOn": [],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [],
+          "defaultAuthentication": {
+            "apiKeyConfig": {
+              "apiKeyExpirationDate": "2025-05-11T22:12:35.832Z",
+              "apiKeyExpirationDays": 365,
+              "description": "AGAAPIKey"
+            },
+            "authenticationType": "API_KEY"
+          }
+        }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync"
+    }
+  },
   "auth": {
     "anonymousgradingapplf19b24ecf19b24ec": {
       "customAuth": false,

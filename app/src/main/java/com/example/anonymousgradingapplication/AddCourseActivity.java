@@ -22,6 +22,8 @@ public class AddCourseActivity extends AppCompatActivity {
         outButton = (Button) findViewById(R.id.buttonLogOut);
         addCourseButton = (Button) findViewById(R.id.buttonAddCourse);
 
+
+
         outButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)

@@ -51,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
                         passText.getText().toString(),
                         options, result->{
                             Log.i("AmplifyRegister", "Result:" + result.toString());
-                            Log.i("AmplifyRegister", "User: " + emailText.getText().toString() +
+                            Log.i("AmplifyRegister", "User: " + nameText.getText().toString() +
                                     " Pass: " + passText.getText().toString());
                             }
                         ,
