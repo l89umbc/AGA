@@ -20,8 +20,8 @@
 
     <ListView
         android:id="@+id/studentHolder"
-        android:layout_width="331dp"
-        android:layout_height="504dp"
+        android:layout_width="323dp"
+        android:layout_height="451dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

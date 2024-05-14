@@ -193,6 +193,10 @@ public class ExamScanActivity extends AppCompatActivity {
                     Toast.makeText(ExamScanActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
                 } else {
                     String[] parts = result.getContents().split(",");
+                    if(parts.length < 2){
+                        Toast.makeText(ExamScanActivity.this, "Invalid Barcode", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     String name = parts[0].trim();
                     String exam = parts[1].trim();
                     int grade = (int) Math.ceil(Math.random() * 100);
@@ -215,7 +219,7 @@ public class ExamScanActivity extends AppCompatActivity {
 
                     Toast.makeText(ExamScanActivity.this, "Name: " + name, Toast.LENGTH_LONG).show();
                     Toast.makeText(ExamScanActivity.this, "Exam: " + exam, Toast.LENGTH_LONG).show();
-                    Toast.makeText(ExamScanActivity.this, "Grade: " + exam, Toast.LENGTH_LONG).show();
+                    Toast.makeText(ExamScanActivity.this, "Grade: " + String.valueOf(grade), Toast.LENGTH_LONG).show();
 //                    Toast.makeText(ExamScanActivity.this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                 }
             });

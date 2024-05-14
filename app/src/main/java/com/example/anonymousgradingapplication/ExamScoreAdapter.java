@@ -38,7 +38,7 @@ public class ExamScoreAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = inflater.inflate(R.layout.activity_exam_map, null);
+        convertView = inflater.inflate(R.layout.activity_exam_score_map, null);
         TextView text = (TextView) convertView.findViewById(R.id.studentNameTextView);
         TextView text2 = (TextView) convertView.findViewById(R.id.studentGradeTextView);
         text.setText(studentNames.get(position));

@@ -27,6 +27,7 @@ public class ClassInfoActivity extends AppCompatActivity {
     private ArrayList<String> studentNames;
     private ArrayList<Bitmap> barcodeBitmaps;
     private BarcodeMapAdapter adapter;
+    private String examName;
     private ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class ClassInfoActivity extends AppCompatActivity {
         backButton = (Button) findViewById(R.id.buttonClassInfoBack);
         listView = (ListView) findViewById(R.id.studentHolder);
         examScores = (Button) findViewById(R.id.buttonExamScores);
+        examName = getIntent().getStringExtra("examName");
 
         studentNames = new ArrayList<String>();
         barcodeBitmaps = new ArrayList<Bitmap>();
@@ -48,7 +50,7 @@ public class ClassInfoActivity extends AppCompatActivity {
                 BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                 Bitmap bitmap = null;
                 try {
-                    bitmap = barcodeEncoder.encodeBitmap(name, BarcodeFormat.QR_CODE, 400, 400);
+                    bitmap = barcodeEncoder.encodeBitmap((name+","+examName), BarcodeFormat.QR_CODE, 400, 400);
                 } catch (WriterException e) {
                     throw new RuntimeException(e);
                 }
