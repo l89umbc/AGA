@@ -24,12 +24,14 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 public final class StudentExam implements Model {
   public static final QueryField ID = field("StudentExam", "id");
   public static final QueryField GRADE = field("StudentExam", "grade");
+  public static final QueryField EXAM_STUDENT_EXAM_ID = field("StudentExam", "examStudentExamId");
   public static final QueryField STUDENT_EXAM_STUDENT_ID = field("StudentExam", "studentExamStudentId");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="Student", isRequired = true) @HasOne(associatedWith = "id", type = Student.class) Student student = null;
   private final @ModelField(targetType="String", isRequired = true) String grade;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
+  private final @ModelField(targetType="ID") String examStudentExamId;
   private final @ModelField(targetType="ID", isRequired = true) String studentExamStudentId;
   /** @deprecated This API is internal to Amplify and should not be used. */
   @Deprecated
@@ -57,13 +59,18 @@ public final class StudentExam implements Model {
       return updatedAt;
   }
   
+  public String getExamStudentExamId() {
+      return examStudentExamId;
+  }
+  
   public String getStudentExamStudentId() {
       return studentExamStudentId;
   }
   
-  private StudentExam(String id, String grade, String studentExamStudentId) {
+  private StudentExam(String id, String grade, String examStudentExamId, String studentExamStudentId) {
     this.id = id;
     this.grade = grade;
+    this.examStudentExamId = examStudentExamId;
     this.studentExamStudentId = studentExamStudentId;
   }
   
@@ -79,6 +86,7 @@ public final class StudentExam implements Model {
               ObjectsCompat.equals(getGrade(), studentExam.getGrade()) &&
               ObjectsCompat.equals(getCreatedAt(), studentExam.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), studentExam.getUpdatedAt()) &&
+              ObjectsCompat.equals(getExamStudentExamId(), studentExam.getExamStudentExamId()) &&
               ObjectsCompat.equals(getStudentExamStudentId(), studentExam.getStudentExamStudentId());
       }
   }
@@ -90,6 +98,7 @@ public final class StudentExam implements Model {
       .append(getGrade())
       .append(getCreatedAt())
       .append(getUpdatedAt())
+      .append(getExamStudentExamId())
       .append(getStudentExamStudentId())
       .toString()
       .hashCode();
@@ -103,6 +112,7 @@ public final class StudentExam implements Model {
       .append("grade=" + String.valueOf(getGrade()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()) + ", ")
+      .append("examStudentExamId=" + String.valueOf(getExamStudentExamId()) + ", ")
       .append("studentExamStudentId=" + String.valueOf(getStudentExamStudentId()))
       .append("}")
       .toString();
@@ -124,6 +134,7 @@ public final class StudentExam implements Model {
     return new StudentExam(
       id,
       null,
+      null,
       null
     );
   }
@@ -131,6 +142,7 @@ public final class StudentExam implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       grade,
+      examStudentExamId,
       studentExamStudentId);
   }
   public interface GradeStep {
@@ -146,6 +158,7 @@ public final class StudentExam implements Model {
   public interface BuildStep {
     StudentExam build();
     BuildStep id(String id);
+    BuildStep examStudentExamId(String examStudentExamId);
   }
   
 
@@ -153,13 +166,15 @@ public final class StudentExam implements Model {
     private String id;
     private String grade;
     private String studentExamStudentId;
+    private String examStudentExamId;
     public Builder() {
       
     }
     
-    private Builder(String id, String grade, String studentExamStudentId) {
+    private Builder(String id, String grade, String examStudentExamId, String studentExamStudentId) {
       this.id = id;
       this.grade = grade;
+      this.examStudentExamId = examStudentExamId;
       this.studentExamStudentId = studentExamStudentId;
     }
     
@@ -170,6 +185,7 @@ public final class StudentExam implements Model {
         return new StudentExam(
           id,
           grade,
+          examStudentExamId,
           studentExamStudentId);
     }
     
@@ -187,6 +203,12 @@ public final class StudentExam implements Model {
         return this;
     }
     
+    @Override
+     public BuildStep examStudentExamId(String examStudentExamId) {
+        this.examStudentExamId = examStudentExamId;
+        return this;
+    }
+    
     /**
      * @param id id
      * @return Current Builder instance, for fluent method chaining
@@ -199,8 +221,8 @@ public final class StudentExam implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String grade, String studentExamStudentId) {
-      super(id, grade, studentExamStudentId);
+    private CopyOfBuilder(String id, String grade, String examStudentExamId, String studentExamStudentId) {
+      super(id, grade, examStudentExamId, studentExamStudentId);
       Objects.requireNonNull(grade);
       Objects.requireNonNull(studentExamStudentId);
     }
@@ -213,6 +235,11 @@ public final class StudentExam implements Model {
     @Override
      public CopyOfBuilder studentExamStudentId(String studentExamStudentId) {
       return (CopyOfBuilder) super.studentExamStudentId(studentExamStudentId);
+    }
+    
+    @Override
+     public CopyOfBuilder examStudentExamId(String examStudentExamId) {
+      return (CopyOfBuilder) super.examStudentExamId(examStudentExamId);
     }
   }
   

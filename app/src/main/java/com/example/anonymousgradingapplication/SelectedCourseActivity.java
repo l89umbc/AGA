@@ -33,7 +33,7 @@ import java.util.List;
 public class SelectedCourseActivity extends AppCompatActivity {
 
     private Button examsButton, saveButton, uploadButton, fetchButton;
-    private EditText editProfName, editClassName;
+    private TextView editProfName, editClassName;
     private TextView classRosterText;
     private List<Student> toAdd;
     private ActivityResultLauncher<Intent> activityResultLauncher;
@@ -42,6 +42,7 @@ public class SelectedCourseActivity extends AppCompatActivity {
     public static String namepref= "Class1";
     private String profID;
     private String courseID;
+    private String courseName;
     private Professor currProfessor = null;
     private StudentClass currClass = null;
 
@@ -55,11 +56,16 @@ public class SelectedCourseActivity extends AppCompatActivity {
         uploadButton = (Button) findViewById(R.id.buttonUploadRoster);
         fetchButton = (Button) findViewById(R.id.buttonFetchRoster);
         classRosterText = (TextView) findViewById(R.id.textViewRoster);
-        editClassName = (EditText) findViewById(R.id.editTextCourseName);
-        editProfName = (EditText) findViewById(R.id.editTextProfessor);
+        editClassName = (TextView) findViewById(R.id.editTextCourseName);
+        editProfName = (TextView) findViewById(R.id.editTextProfessor);
 
         Intent intent = getIntent();
         profID = intent.getStringExtra("profID");
+        courseID = intent.getStringExtra("courseID");
+        courseName = intent.getStringExtra("courseName");
+
+        editClassName.setText(courseName);
+
         Amplify.DataStore.query(Professor.class, Professor.ID.eq(profID),
                 matches->{
                     while(matches.hasNext())
@@ -199,7 +205,7 @@ public class SelectedCourseActivity extends AppCompatActivity {
                                             Log.d(line[0], line[1]);
                                             Student student = Student.builder().umbcId(line[1]).name(line[0]).studentClassStudentsId(currClass.getId()).build();
 
-                                            Amplify.DataStore.query(Student.class, Student.NAME.eq(line[0]),
+                                            Amplify.DataStore.query(Student.class, Student.NAME.eq(line[0]).and(Student.STUDENT_CLASS_STUDENTS_ID.eq(currClass.getId())),
                                                     success->{
                                                         boolean flag = false;
                                                         while(success.hasNext())

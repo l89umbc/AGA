@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class ExamScanActivity extends AppCompatActivity {
 
-    private Button buttonCamera, backButton, classMapButton, addStudentButton;
+    private Button buttonCamera, backButton, classMapButton, addStudentButton, fetchButton;
 
     private String courseID, profID;
     private Professor currProfessor;
@@ -72,6 +72,7 @@ public class ExamScanActivity extends AppCompatActivity {
         addStudentButton = (Button) findViewById(R.id.addStudentButton);
         studentNameEdit = (EditText) findViewById(R.id.editAddStudent);
         rosterListView = (ListView) findViewById(R.id.rosterListView);
+        fetchButton = (Button) findViewById(R.id.buttonFetchExam);
 
         adapter = new BarcodeMapAdapter(this.getApplicationContext(), studentNames, barcodeBitmaps);
 
@@ -96,8 +97,33 @@ public class ExamScanActivity extends AppCompatActivity {
 
         rosterListView.setAdapter(adapter);
 
-        adapter.notifyDataSetChanged();
+        fetchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Amplify.DataStore.query(Student.class, Student.STUDENT_CLASS_STUDENTS_ID.eq(currClass.getId()),
+                        matches->{
+                            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                            while (matches.hasNext())
+                            {
+                                Student temp = matches.next();
+                                if(!studentNames.contains(temp.getName()))
+                                {
+                                    try
+                                    {
+                                        barcodeBitmaps.add(barcodeEncoder.encodeBitmap(temp.getName(), BarcodeFormat.QR_CODE, 400,400));
+                                        studentNames.add(temp.getName());
+                                    } catch (Exception e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        },
+                        error->Log.e("FetchExamRoster", "Error: "+error));
 
+                adapter.notifyDataSetChanged();
+            }
+        });
         addStudentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,6 +132,8 @@ public class ExamScanActivity extends AppCompatActivity {
                     Bitmap bitmap = barcodeEncoder.encodeBitmap(studentNameEdit.getText().toString(), BarcodeFormat.QR_CODE, 400, 400);
                     barcodeBitmaps.add(bitmap);
                     studentNames.add(studentNameEdit.getText().toString());
+                    Student temp = Student.builder().umbcId("AB12345").name(studentNameEdit.getText().toString()).studentClassStudentsId(currClass.getId()).build();
+                    Amplify.DataStore.save(temp, result->Log.i("AddStudent", "Success: "+result), error->Log.e("AddStudent", "Error: "+error));
                     adapter.notifyDataSetChanged();
                 } catch(Exception e) {
                     Log.d("new student", "new student failed");

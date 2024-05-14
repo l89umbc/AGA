@@ -18,6 +18,7 @@ type StudentClass @model {
 type Exam @model {
     id: ID!
     name: String!
+    studentExam: [StudentExam] @hasMany
 }
 
 type StudentExam @model {

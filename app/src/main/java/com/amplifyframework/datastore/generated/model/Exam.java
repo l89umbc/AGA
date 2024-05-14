@@ -1,5 +1,6 @@
 package com.amplifyframework.datastore.generated.model;
 
+import com.amplifyframework.core.model.annotations.HasMany;
 import com.amplifyframework.core.model.temporal.Temporal;
 import com.amplifyframework.core.model.ModelIdentifier;
 
@@ -26,6 +27,7 @@ public final class Exam implements Model {
   public static final QueryField STUDENT_CLASS_EXAMS_ID = field("Exam", "studentClassExamsId");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="String", isRequired = true) String name;
+  private final @ModelField(targetType="StudentExam") @HasMany(associatedWith = "examStudentExamId", type = StudentExam.class) List<StudentExam> studentExam = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   private final @ModelField(targetType="ID") String studentClassExamsId;
@@ -41,6 +43,10 @@ public final class Exam implements Model {
   
   public String getName() {
       return name;
+  }
+  
+  public List<StudentExam> getStudentExam() {
+      return studentExam;
   }
   
   public Temporal.DateTime getCreatedAt() {
