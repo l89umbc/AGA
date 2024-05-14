@@ -32,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Amplify.Auth.signOut(result->{});
                 Amplify.Auth.signIn(userText.getText().toString(),
                         passText.getText().toString(),
                         result -> Log.i("AmplifyLogin", "Result: " + result.toString()),

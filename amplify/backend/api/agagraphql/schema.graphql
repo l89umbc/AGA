@@ -23,7 +23,7 @@ type Exam @model {
 
 type StudentExam @model {
     id: ID!
-    student: Student! @hasOne
+    studentName: String!
     grade: String!
 }
 

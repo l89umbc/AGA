@@ -18,6 +18,7 @@ import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Professor;
 import com.amplifyframework.datastore.generated.model.Student;
 import com.amplifyframework.datastore.generated.model.StudentClass;
+import com.amplifyframework.datastore.generated.model.StudentExam;
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.journeyapps.barcodescanner.ScanContract;
@@ -168,6 +169,10 @@ public class ExamScanActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent myIntent = new Intent(ExamScanActivity.this, ClassInfoActivity.class);
                 myIntent.putStringArrayListExtra("studentNames", studentNames);
+                myIntent.putExtra("profID", profID);
+                myIntent.putExtra("courseID", courseID);
+                myIntent.putExtra("examID", examID);
+                myIntent.putExtra("examName", examName);
                 startActivity(myIntent);
             }
         });
@@ -180,7 +185,7 @@ public class ExamScanActivity extends AppCompatActivity {
 
     }
 
-    // Copied from zx barcode library readme
+    // Partially copied from zx barcode library readme
 
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(),
             result -> {
@@ -191,11 +196,27 @@ public class ExamScanActivity extends AppCompatActivity {
                     String name = parts[0].trim();
                     String exam = parts[1].trim();
                     int grade = (int) Math.ceil(Math.random() * 100);
-                    Log.d(name, exam);
+
+                    Amplify.DataStore.query(StudentExam.class, StudentExam.STUDENT_NAME.eq(name).and(StudentExam.EXAM_STUDENT_EXAM_ID.eq(examID)),
+                            matches->{
+                                if(!matches.hasNext()) // new exam grade
+                                {
+                                    StudentExam studentExam = StudentExam.builder().studentName(name).grade(String.valueOf(grade)).examStudentExamId(examID).build();
+                                    Amplify.DataStore.save(studentExam, success->Log.i("AddExamScore", "Success: "+success), error->Log.e("AddExamScore", "Error: "+error));
+                                }
+                                else // exam grade exists, update grade
+                                {
+                                    StudentExam studentExam = matches.next();
+                                    studentExam = studentExam.copyOfBuilder().grade(String.valueOf(grade)).build();
+                                    Amplify.DataStore.save(studentExam, success->Log.i("AddExamScore", "Success: "+success), error->Log.e("AddExamScore", "Error: "+error));
+                                }
+                            },
+                            error->Log.e("FetchExamScore", "Error: "+error));
+
                     Toast.makeText(ExamScanActivity.this, "Name: " + name, Toast.LENGTH_LONG).show();
                     Toast.makeText(ExamScanActivity.this, "Exam: " + exam, Toast.LENGTH_LONG).show();
                     Toast.makeText(ExamScanActivity.this, "Grade: " + exam, Toast.LENGTH_LONG).show();
-                    Toast.makeText(ExamScanActivity.this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(ExamScanActivity.this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                 }
             });
 

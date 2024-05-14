@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class ClassInfoActivity extends AppCompatActivity {
 
-    private Button backButton;
+    private Button backButton, examScores;
     private ArrayList<String> studentNames;
     private ArrayList<Bitmap> barcodeBitmaps;
     private BarcodeMapAdapter adapter;
@@ -35,6 +35,7 @@ public class ClassInfoActivity extends AppCompatActivity {
 
         backButton = (Button) findViewById(R.id.buttonClassInfoBack);
         listView = (ListView) findViewById(R.id.studentHolder);
+        examScores = (Button) findViewById(R.id.buttonExamScores);
 
         studentNames = new ArrayList<String>();
         barcodeBitmaps = new ArrayList<Bitmap>();
@@ -58,6 +59,15 @@ public class ClassInfoActivity extends AppCompatActivity {
         adapter = new BarcodeMapAdapter(ClassInfoActivity.this, studentNames, barcodeBitmaps);
 
         listView.setAdapter(adapter);
+
+        examScores.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(ClassInfoActivity.this, ExamScoresActivity.class);
+                myIntent.putExtra("examID", getIntent().getStringExtra("examID"));
+                startActivity(myIntent);
+            }
+        });
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
