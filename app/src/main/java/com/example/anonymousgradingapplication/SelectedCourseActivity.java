@@ -64,8 +64,6 @@ public class SelectedCourseActivity extends AppCompatActivity {
         courseID = intent.getStringExtra("courseID");
         courseName = intent.getStringExtra("courseName");
 
-        editClassName.setText(courseName);
-
         Amplify.DataStore.query(Professor.class, Professor.ID.eq(profID),
                 matches->{
                     while(matches.hasNext())
@@ -76,6 +74,17 @@ public class SelectedCourseActivity extends AppCompatActivity {
                 },
                 error->Log.e("GetProfessor", "Error: "+error)
                 );
+
+        Amplify.DataStore.query(StudentClass.class, StudentClass.ID.eq(courseID),
+                matches->{
+                    while(matches.hasNext())
+                    {
+                        currClass = matches.next();
+                        editClassName.setText(currClass.getName());
+                    }
+                },
+                error->Log.e("GetProfessor", "Error: "+error)
+        );
 
 //        prefs = getSharedPreferences(namepref, MODE_PRIVATE);
 //        editor =  prefs.edit();

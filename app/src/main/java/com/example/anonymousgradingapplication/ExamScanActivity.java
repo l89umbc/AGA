@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amplifyframework.core.Amplify;
@@ -22,20 +23,28 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class ExamScanActivity extends AppCompatActivity {
 
     private Button buttonCamera, backButton, classMapButton, addStudentButton, fetchButton;
 
-    private String courseID, profID;
+    private String courseID, profID, examID, examName;
     private Professor currProfessor;
     private StudentClass currClass;
+    private TextView textViewExamName;
     private EditText studentNameEdit;
     private ListView rosterListView;
     private ArrayList<String> studentNames;
     private ArrayList<Bitmap> barcodeBitmaps;
     private BarcodeMapAdapter adapter;
+
+    private String getBarcodeString(String student)
+    {
+        return student + "," + examName;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +53,8 @@ public class ExamScanActivity extends AppCompatActivity {
 
         profID = getIntent().getStringExtra("profID");
         courseID = getIntent().getStringExtra("courseID");
+        examID = getIntent().getStringExtra("examID");
+        examName = getIntent().getStringExtra("examName");
 
         Amplify.DataStore.query(Professor.class, Professor.ID.eq(profID),
                 matches->{
@@ -73,8 +84,12 @@ public class ExamScanActivity extends AppCompatActivity {
         studentNameEdit = (EditText) findViewById(R.id.editAddStudent);
         rosterListView = (ListView) findViewById(R.id.rosterListView);
         fetchButton = (Button) findViewById(R.id.buttonFetchExam);
+        textViewExamName = (TextView) findViewById(R.id.editExamName);
+
+        textViewExamName.setText(examName);
 
         adapter = new BarcodeMapAdapter(this.getApplicationContext(), studentNames, barcodeBitmaps);
+        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
 
         Amplify.DataStore.query(Student.class, Student.STUDENT_CLASS_STUDENTS_ID.eq(courseID),
                 matches->{
@@ -83,8 +98,8 @@ public class ExamScanActivity extends AppCompatActivity {
                         Student temp = matches.next();
 
                         try {
-                            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-                            Bitmap bitmap = barcodeEncoder.encodeBitmap(temp.getName(), BarcodeFormat.QR_CODE, 400, 400);
+
+                            Bitmap bitmap = barcodeEncoder.encodeBitmap(getBarcodeString(temp.getName()), BarcodeFormat.QR_CODE, 400, 400);
                             barcodeBitmaps.add(bitmap);
                             studentNames.add(temp.getName());
                         } catch (Exception e)
@@ -102,7 +117,7 @@ public class ExamScanActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Amplify.DataStore.query(Student.class, Student.STUDENT_CLASS_STUDENTS_ID.eq(currClass.getId()),
                         matches->{
-                            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+
                             while (matches.hasNext())
                             {
                                 Student temp = matches.next();
@@ -110,7 +125,7 @@ public class ExamScanActivity extends AppCompatActivity {
                                 {
                                     try
                                     {
-                                        barcodeBitmaps.add(barcodeEncoder.encodeBitmap(temp.getName(), BarcodeFormat.QR_CODE, 400,400));
+                                        barcodeBitmaps.add(barcodeEncoder.encodeBitmap(getBarcodeString(temp.getName()), BarcodeFormat.QR_CODE, 400,400));
                                         studentNames.add(temp.getName());
                                     } catch (Exception e)
                                     {
@@ -128,8 +143,8 @@ public class ExamScanActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-                    Bitmap bitmap = barcodeEncoder.encodeBitmap(studentNameEdit.getText().toString(), BarcodeFormat.QR_CODE, 400, 400);
+
+                    Bitmap bitmap = barcodeEncoder.encodeBitmap(getBarcodeString(studentNameEdit.getText().toString()), BarcodeFormat.QR_CODE, 400, 400);
                     barcodeBitmaps.add(bitmap);
                     studentNames.add(studentNameEdit.getText().toString());
                     Student temp = Student.builder().umbcId("AB12345").name(studentNameEdit.getText().toString()).studentClassStudentsId(currClass.getId()).build();
@@ -174,10 +189,12 @@ public class ExamScanActivity extends AppCompatActivity {
                 } else {
                     String[] parts = result.getContents().split(",");
                     String name = parts[0].trim();
-                    String grade = parts[1].trim();
-                    Log.d(name, grade);
+                    String exam = parts[1].trim();
+                    int grade = (int) Math.ceil(Math.random() * 100);
+                    Log.d(name, exam);
                     Toast.makeText(ExamScanActivity.this, "Name: " + name, Toast.LENGTH_LONG).show();
-                    Toast.makeText(ExamScanActivity.this, "Grade: " + grade, Toast.LENGTH_LONG).show();
+                    Toast.makeText(ExamScanActivity.this, "Exam: " + exam, Toast.LENGTH_LONG).show();
+                    Toast.makeText(ExamScanActivity.this, "Grade: " + exam, Toast.LENGTH_LONG).show();
                     Toast.makeText(ExamScanActivity.this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                 }
             });
